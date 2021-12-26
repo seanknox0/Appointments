@@ -8,14 +8,23 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.wit.appointments.R
 import ie.wit.appointments.adapters.AppointmentAdapter
+import ie.wit.appointments.adapters.AppointmentListener
 import ie.wit.appointments.databinding.ActivityAppointmentListBinding
 import ie.wit.appointments.main.MainApp
+import ie.wit.appointments.models.AppointmentModel
 
 
-class AppointmentListActivity : AppCompatActivity() {
+class AppointmentListActivity : AppCompatActivity(), AppointmentListener {
 
     lateinit var app: MainApp
     private lateinit var binding: ActivityAppointmentListBinding
+
+
+    override fun onAppointmentClick(appointment: AppointmentModel) {
+        val launcherIntent = Intent(this, AppointmentActivity::class.java)
+        launcherIntent.putExtra("appointment_edit", appointment)
+        startActivityForResult(launcherIntent,0)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +37,7 @@ class AppointmentListActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = AppointmentAdapter(app.appointments)
+        binding.recyclerView.adapter = AppointmentAdapter(app.appointments.findAll(), this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

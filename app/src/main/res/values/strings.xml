@@ -5,4 +5,6 @@
     <string name="hint_appointmentDate">Date</string>
     <string name="menu_addAppointment">Add</string>
     <string name="menu_cancelAppointment">Cancel</string>
+    <string name="enter_appointment_title"> Please enter a Appointment Title </string>
+    <string name="save_appointment"> Save Appointment </string>
 </resources>

@@ -6,18 +6,24 @@ import androidx.recyclerview.widget.RecyclerView
 import ie.wit.appointments.databinding.CardPlacemarkBinding
 import ie.wit.appointments.models.AppointmentModel
 
-class AppointmentAdapter constructor(private var appointments: List<AppointmentModel>) :
+interface AppointmentListener {
+    fun onAppointmentClick(appointment: AppointmentModel)
+}
+
+class AppointmentAdapter constructor(private var appointments: List<AppointmentModel>,
+                                   private val listener: AppointmentListener) :
     RecyclerView.Adapter<AppointmentAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
         val binding = CardPlacemarkBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
+
         return MainHolder(binding)
     }
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val appointment = appointments[holder.adapterPosition]
-        holder.bind(appointment)
+        holder.bind(appointment, listener)
     }
 
     override fun getItemCount(): Int = appointments.size
@@ -25,9 +31,10 @@ class AppointmentAdapter constructor(private var appointments: List<AppointmentM
     class MainHolder(private val binding : CardPlacemarkBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(appointment: AppointmentModel) {
+        fun bind(appointment: AppointmentModel, listener: AppointmentListener) {
             binding.appointmentPatient.text = appointment.patient
             binding.aptdate.text = appointment.date
+            binding.root.setOnClickListener { listener.onAppointmentClick(appointment) }
         }
     }
 }

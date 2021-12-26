@@ -20,6 +20,8 @@ class AppointmentActivity : AppCompatActivity() {
     lateinit var app : MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        var edit = false
+
         super.onCreate(savedInstanceState)
         binding = ActivityAppointmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -31,23 +33,31 @@ class AppointmentActivity : AppCompatActivity() {
         app = application as MainApp
         i("Appointment Activity started...")
 
+        if (intent.hasExtra("appointment_edit")) {
+            edit = true
+            appointment = intent.extras?.getParcelable("appointment_edit")!!
+            binding.appointmentPatient.setText(appointment.patient)
+            binding.aptdate.setText(appointment.date)
+            binding.btnAdd.setText(R.string.save_appointment)
+        }
+
         binding.btnAdd.setOnClickListener() {
             appointment.patient = binding.appointmentPatient.text.toString()
             appointment.date = binding.aptdate.text.toString()
 
-            if (appointment.patient.isNotEmpty()) {
-                app.appointments.add(appointment.copy())
-                i("add Button Pressed: ${appointment}")
-                for (i in app.appointments.indices)
-                { i("Appointment[$i]:${this.app!!.appointments[i]}") }
-                setResult(RESULT_OK)
-                finish()
-            }
-            else {
-                Snackbar
-                    .make(it,"Please Enter a patient name", Snackbar.LENGTH_LONG)
+            if (appointment.patient.isEmpty()) {
+                Snackbar.make(it,R.string.enter_appointment_title, Snackbar.LENGTH_LONG)
                     .show()
             }
+            else {
+                if (edit) {
+                    app.appointments.update(appointment.copy())
+                } else {
+                    app.appointments.create(appointment.copy())
+                }
+            }
+            setResult(RESULT_OK)
+            finish()
         }
     }
 
