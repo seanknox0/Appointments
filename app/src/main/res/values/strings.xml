@@ -7,4 +7,7 @@
     <string name="menu_cancelAppointment">Cancel</string>
     <string name="enter_appointment_title"> Please enter a Appointment Title </string>
     <string name="save_appointment"> Save Appointment </string>
+    <string name="button_addImage"> Add Image </string>
+    <string name="select_appointment_image">Select placemark image</string>
+    <string name="change_appointment_image">Change appointment image</string>
 </resources>

@@ -27,6 +27,7 @@ class AppointmentMemStore : AppointmentStore {
         if (foundAppointment != null) {
             foundAppointment.patient = appointment.patient
             foundAppointment.date = appointment.date
+            foundAppointment.image = appointment.image
             logAll()
         }
     }
