@@ -3,4 +3,6 @@
     <string name="button_addAppointment">Add Appointment</string>
     <string name="hint_appointmentPatient">Patient Name</string>
     <string name="hint_appointmentDate">Date</string>
+    <string name="menu_addAppointment">Add</string>
+    <string name="menu_cancelAppointment">Cancel</string>
 </resources>
