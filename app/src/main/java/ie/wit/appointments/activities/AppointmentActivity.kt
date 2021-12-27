@@ -15,6 +15,7 @@ import ie.wit.appointments.databinding.ActivityAppointmentBinding
 import ie.wit.appointments.helpers.showImagePicker
 import ie.wit.appointments.main.MainApp
 import ie.wit.appointments.models.AppointmentModel
+import ie.wit.appointments.models.Location
 import timber.log.Timber.i
 
 class AppointmentActivity : AppCompatActivity() {
@@ -23,7 +24,8 @@ class AppointmentActivity : AppCompatActivity() {
     var appointment = AppointmentModel()
     lateinit var app : MainApp
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
-    val IMAGE_REQUEST = 1
+    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
+    //var location = Location(52.245696, -7.139102, 15f)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,7 @@ class AppointmentActivity : AppCompatActivity() {
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
         registerImagePickerCallback()
-
+        registerMapCallback()
 
         app = application as MainApp
 
@@ -53,6 +55,18 @@ class AppointmentActivity : AppCompatActivity() {
             if (appointment.image != Uri.EMPTY) {
                 binding.chooseImage.setText(R.string.change_appointment_image)
             }
+        }
+
+        binding.appointmentLocation.setOnClickListener {
+            val location = Location(52.245696, -7.139102, 15f)
+            if (appointment.zoom != 0f) {
+                location.lat =  appointment.lat
+                location.lng = appointment.lng
+                location.zoom = appointment.zoom
+            }
+            val launcherIntent = Intent(this, MapActivity::class.java)
+                .putExtra("location", location)
+            mapIntentLauncher.launch(launcherIntent)
         }
 
         binding.btnAdd.setOnClickListener() {
@@ -91,6 +105,26 @@ class AppointmentActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun registerMapCallback() {
+        mapIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when (result.resultCode) {
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("Got Location ${result.data.toString()}")
+                            val location = result.data!!.extras?.getParcelable<Location>("location")!!
+                            i("Location == $location")
+                            appointment.lat = location.lat
+                            appointment.lng = location.lng
+                            appointment.zoom = location.zoom
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
     }
 
     private fun registerImagePickerCallback() {

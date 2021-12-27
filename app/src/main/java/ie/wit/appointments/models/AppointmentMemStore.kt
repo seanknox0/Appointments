@@ -23,11 +23,14 @@ class AppointmentMemStore : AppointmentStore {
     }
 
     override fun update(appointment: AppointmentModel) {
-        var foundAppointment: AppointmentModel? = appointments.find { p -> p.id == appointment.id }
+        val foundAppointment: AppointmentModel? = appointments.find { p -> p.id == appointment.id }
         if (foundAppointment != null) {
             foundAppointment.patient = appointment.patient
             foundAppointment.date = appointment.date
             foundAppointment.image = appointment.image
+            foundAppointment.lat = appointment.lat
+            foundAppointment.lng = appointment.lng
+            foundAppointment.zoom = appointment.zoom
             logAll()
         }
     }
