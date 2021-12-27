@@ -27,12 +27,18 @@ class AppointmentMemStore : AppointmentStore {
         if (foundAppointment != null) {
             foundAppointment.patient = appointment.patient
             foundAppointment.date = appointment.date
+            foundAppointment.time = appointment.time
+            foundAppointment.service = appointment.service
             foundAppointment.image = appointment.image
             foundAppointment.lat = appointment.lat
             foundAppointment.lng = appointment.lng
             foundAppointment.zoom = appointment.zoom
             logAll()
         }
+    }
+
+    override fun delete(appointment: AppointmentModel) {
+        appointments.remove(appointment)
     }
 
     fun logAll() {

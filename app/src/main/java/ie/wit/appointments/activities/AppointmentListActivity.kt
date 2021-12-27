@@ -23,6 +23,15 @@ class AppointmentListActivity : AppCompatActivity(), AppointmentListener {
     private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
 
 
+    private fun loadAppointments() {
+        showAppointments(app.appointments.findAll())
+    }
+
+    fun showAppointments (appointments: List<AppointmentModel>) {
+        binding.recyclerView.adapter = AppointmentAdapter(appointments, this)
+        binding.recyclerView.adapter?.notifyDataSetChanged()
+    }
+
     override fun onAppointmentClick(appointment: AppointmentModel) {
         val launcherIntent = Intent(this, AppointmentActivity::class.java)
         launcherIntent.putExtra("appointment_edit", appointment)
@@ -40,7 +49,7 @@ class AppointmentListActivity : AppCompatActivity(), AppointmentListener {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = AppointmentAdapter(app.appointments.findAll(), this)
+        loadAppointments()
 
         registerRefreshCallback()
     }
@@ -63,6 +72,6 @@ class AppointmentListActivity : AppCompatActivity(), AppointmentListener {
     private fun registerRefreshCallback() {
         refreshIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { binding.recyclerView.adapter?.notifyDataSetChanged() }
+            { loadAppointments() }
     }
 }

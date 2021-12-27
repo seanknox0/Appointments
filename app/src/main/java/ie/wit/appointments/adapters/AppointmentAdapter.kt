@@ -35,6 +35,8 @@ class AppointmentAdapter constructor(private var appointments: List<AppointmentM
         fun bind(appointment: AppointmentModel, listener: AppointmentListener) {
             binding.appointmentPatient.text = appointment.patient
             binding.aptdate.text = appointment.date
+            binding.apttime.text = appointment.time
+            binding.service.text = appointment.service
             Picasso.get().load(appointment.image).resize(200, 200).into(binding.imageIcon)
             binding.root.setOnClickListener { listener.onAppointmentClick(appointment) }
         }

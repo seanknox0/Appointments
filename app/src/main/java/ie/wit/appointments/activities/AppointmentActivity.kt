@@ -26,18 +26,15 @@ class AppointmentActivity : AppCompatActivity() {
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     //var location = Location(52.245696, -7.139102, 15f)
+    var edit = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        var edit = false
 
         binding = ActivityAppointmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
-        registerImagePickerCallback()
-        registerMapCallback()
 
         app = application as MainApp
 
@@ -48,6 +45,8 @@ class AppointmentActivity : AppCompatActivity() {
             appointment = intent.extras?.getParcelable("appointment_edit")!!
             binding.appointmentPatient.setText(appointment.patient)
             binding.aptdate.setText(appointment.date)
+            binding.apttime.setText(appointment.time)
+            binding.service.setText(appointment.service)
             binding.btnAdd.setText(R.string.save_appointment)
             Picasso.get()
                 .load(appointment.image)
@@ -72,6 +71,8 @@ class AppointmentActivity : AppCompatActivity() {
         binding.btnAdd.setOnClickListener() {
             appointment.patient = binding.appointmentPatient.text.toString()
             appointment.date = binding.aptdate.text.toString()
+            binding.apttime.setText(appointment.time)
+            binding.service.setText(appointment.service)
 
             if (appointment.patient.isEmpty()) {
                 Snackbar.make(it,R.string.enter_appointment_title, Snackbar.LENGTH_LONG)
@@ -91,15 +92,23 @@ class AppointmentActivity : AppCompatActivity() {
         binding.chooseImage.setOnClickListener {
             showImagePicker(imageIntentLauncher)
         }
+
+        registerImagePickerCallback()
+        registerMapCallback()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_appointment, menu)
+        if (edit) menu.getItem(0).isVisible = true
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.item_delete -> {
+                app.appointments.delete(appointment)
+                finish()
+            }
             R.id.item_cancel -> {
                 finish()
             }
